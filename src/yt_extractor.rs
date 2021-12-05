@@ -15,20 +15,20 @@ impl YouTubeExtractor {
     }
 
     pub fn download(self) -> Result<(), ExtractorError> {
-        let url = self
+        let url: String = self
             .player_response()?
             .streaming_data
             .best_format()
             .ok_or(ExtractorError::VideoFormatsEmpty)?;
 
         println!("Downloading video");
-        let resp = reqwest::blocking::get(url)?;
+        let resp: Response = reqwest::blocking::get(url)?;
         self.create_video(resp)
     }
 
     fn create_video(self, mut response: Response) -> Result<(), ExtractorError> {
-        let mut data = Vec::new();
-        let mut file = File::create("video.mp4")?;
+        let mut data: Vec<u8> = Vec::new();
+        let mut file: File = File::create("video.mp4")?;
         response.read_to_end(&mut data)?;
         file.write_all(&data)?;
 
@@ -52,9 +52,9 @@ impl YouTubeExtractor {
     }
 
     fn player_response(&self) -> Result<PlayerResponse, ExtractorError> {
-        let extraction = self.extract()?;
+        let extraction: String = self.extract()?;
 
-        let player_response = self
+        let player_response: String = self
             .find_regex(&extraction)
             .ok_or(ExtractorError::PlayerResponseNotFound)?;
 

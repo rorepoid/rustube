@@ -21,14 +21,15 @@ pub struct StreamingData {
 
 impl StreamingData {
     pub fn best_format(self) -> Option<String> {
-        let all_formats = self.formats;
+        let all_formats: Vec<VideoFormat> = self.formats;
         if all_formats.is_empty() {
             return None;
         }
 
-        let best = all_formats
-            .iter()
-            .reduce(|a, b| if a.height >= b.height { a } else { b });
+        let best: Option<&VideoFormat> =
+            all_formats
+                .iter()
+                .reduce(|a, b| if a.height >= b.height { a } else { b });
 
         best.map(|video| video.url.to_owned())
     }
