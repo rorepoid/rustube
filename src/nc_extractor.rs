@@ -1,6 +1,6 @@
 use regex::Regex;
 
-use crate::errors::ExtractorError;
+use crate::{errors::ExtractorError, nc_video::PlayerResponse};
 use std::io::Read;
 
 pub struct NicoNicoExtractor {
@@ -27,14 +27,14 @@ impl NicoNicoExtractor {
             .map(|value| value.as_str().replace("&quot;", "\""))
     }
 
-    fn player_response(&self) -> Result<String, ExtractorError> {
+    fn player_response(&self) -> Result<PlayerResponse, ExtractorError> {
         let extraction: String = self.extract()?;
 
         let player_response: String = self
             .find_regex(&extraction)
             .ok_or(ExtractorError::PlayerResponseNotFound)?;
 
-        Ok(player_response)
+        PlayerResponse::new(&player_response)
     }
 
     fn extract(&self) -> Result<String, ExtractorError> {
