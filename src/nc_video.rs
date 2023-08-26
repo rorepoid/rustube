@@ -1,4 +1,4 @@
-use crate::errors::ExtractorError;
+use crate::{errors::ExtractorError, nc_session::{SessionData, SessionFactory}};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -10,6 +10,14 @@ pub struct PlayerResponse {
 impl PlayerResponse {
     pub fn new(text: &str) -> Result<Self, ExtractorError> {
         Ok(serde_json::from_str(text)?)
+    }
+
+    pub fn prepare_session_data(&self) -> Result<String, ExtractorError> {
+        let session: &Session = &self.media.delivery.movie.session;
+        let data: SessionFactory = SessionFactory::new(&session);
+        let json: String = serde_json::to_string(&data)?;
+        // let session_response: String = data.get_session(json)?;
+        Ok(json)
     }
 }
 
